@@ -2,7 +2,7 @@
 import os
 
 # initialize the path to the *original* input directory of images
-ORIG_INPUT_DATASET = "8k_normal_vs_camouflage_clothes_images"
+ORIG_INPUT_DATASET = "original_dataset"
 
 # initialize the base path to the *new* directory that will contain
 # our images after computing the training and testing split

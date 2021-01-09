@@ -3,60 +3,52 @@
 
 # import the necessary packages
 from pyimagesearch import config
-from imutils import paths
 import random
-import shutil
+from shutil import copyfile
 import os
+import math
 
-# grab the paths to all input images in the original input directory
-# and shuffle them
-imagePaths = list(paths.list_images(config.ORIG_INPUT_DATASET))
-random.seed(42)
-random.shuffle(imagePaths)
+def main():
+    run()
 
-# compute the training and testing split
-i = int(len(imagePaths) * config.TRAIN_SPLIT)
-trainPaths = imagePaths[:i]
-testPaths = imagePaths[i:]
+def run():
+    os.mkdir(config.BASE_PATH)
+    os.mkdir(os.path.join(config.BASE_PATH, "training"))
+    os.mkdir(os.path.join(config.BASE_PATH, "validation"))
+    os.mkdir(os.path.join(config.BASE_PATH, "testing"))
+    for className in config.CLASSES:
+        buildDataSet(className)
 
-# we'll be using part of the training data for validation
-i = int(len(trainPaths) * config.VAL_SPLIT)
-valPaths = trainPaths[:i]
-trainPaths = trainPaths[i:]
+def buildDataSet(className):
+    pathToClass = os.path.join(config.ORIG_INPUT_DATASET, className)
+    trainFolder = os.path.join(config.BASE_PATH, "training", className)
+    valFolder = os.path.join(config.BASE_PATH, "validation", className)
+    testFolder = os.path.join(config.BASE_PATH, "testing", className)
+    os.mkdir(trainFolder)
+    os.mkdir(valFolder)
+    os.mkdir(testFolder)
+    classFileNames = os.listdir(pathToClass)
+    shuffledClassFileNames = classFileNames
+    random.shuffle(shuffledClassFileNames)
+    numberOfTrainSamples = math.floor(config.TRAIN_SPLIT * len(shuffledClassFileNames))
+    numberOfValSamples = math.floor(config.VAL_SPLIT * len(shuffledClassFileNames))
+    trainFileNames = shuffledClassFileNames[:numberOfTrainSamples]
+    valFileNames = shuffledClassFileNames[numberOfTrainSamples:numberOfTrainSamples + numberOfValSamples]
+    testFileNames = shuffledClassFileNames[numberOfTrainSamples + numberOfValSamples:]
+    movePathsToDestinantionFolder(trainFileNames, pathToClass, trainFolder)
+    movePathsToDestinantionFolder(valFileNames, pathToClass, valFolder)
+    movePathsToDestinantionFolder(testFileNames, pathToClass, testFolder)
 
-# define the datasets that we'll be building
-datasets = [
-	("training", trainPaths, config.TRAIN_PATH),
-	("validation", valPaths, config.VAL_PATH),
-	("testing", testPaths, config.TEST_PATH)
-]
 
-# loop over the datasets
-for (dType, imagePaths, baseOutput) in datasets:
-	# show which data split we are creating
-	print("[INFO] building '{}' split".format(dType))
+def movePathsToDestinantionFolder(inputFileNames, sourceFolder, destinationFolder):
+    for fileName in inputFileNames:
+        sourcePath = os.path.join(sourceFolder, fileName)
+        destinationPath = os.path.join(destinationFolder, fileName)
+        copyfile(sourcePath, destinationPath)
 
-	# if the output base output directory does not exist, create it
-	if not os.path.exists(baseOutput):
-		print("[INFO] 'creating {}' directory".format(baseOutput))
-		os.makedirs(baseOutput)
 
-	# loop over the input image paths
-	for inputPath in imagePaths:
-		# extract the filename of the input image along with its
-		# corresponding class label
-		filename = inputPath.split(os.path.sep)[-1]
-		label = inputPath.split(os.path.sep)[-2]
+if __name__ == "__main__":
+    main()
 
-		# build the path to the label directory
-		labelPath = os.path.sep.join([baseOutput, label])
 
-		# if the label output directory does not exist, create it
-		if not os.path.exists(labelPath):
-			print("[INFO] 'creating {}' directory".format(labelPath))
-			os.makedirs(labelPath)
 
-		# construct the path to the destination image and then copy
-		# the image itself
-		p = os.path.sep.join([labelPath, filename])
-		shutil.copy2(inputPath, p)
