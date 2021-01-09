@@ -30,4 +30,4 @@ BS = 32
 NUM_EPOCHS = 20
 
 # define the path to the serialized output model after training
-MODEL_PATH = "classifier.model"
+MODEL_PATH = "classifier.model.h5"
