@@ -56,6 +56,8 @@ trainAug.mean = mean
 valAug.mean = mean
 
 # initialize the training generator
+#flow_from_directory automatically generates labels from the directory's
+#structure
 trainGen = trainAug.flow_from_directory(
 	config.TRAIN_PATH,
 	class_mode="categorical",

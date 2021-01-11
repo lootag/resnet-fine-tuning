@@ -8,6 +8,8 @@ ORIG_INPUT_DATASET = "original_dataset"
 # our images after computing the training and testing split
 BASE_PATH = "logo_not_logo"
 
+EVAL_PATH = "evaluation"
+
 # derive the training, validation, and testing directories
 TRAIN_PATH = os.path.sep.join([BASE_PATH, "training"])
 VAL_PATH = os.path.sep.join([BASE_PATH, "validation"])
