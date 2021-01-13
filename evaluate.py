@@ -14,7 +14,7 @@ def main():
     noLogoFolder = "no_logo"
     os.mkdir(logoFolder)
     os.mkdir(noLogoFolder)
-    modelPaths = ["adidas.classifier.h5"]
+    modelPaths = ["adidas.model.h5", "nike.model.h5", "ua.model.h5"]
     evaluateNetworks(modelPaths, logoFolder, noLogoFolder)
 
 def evaluateNetworks(modelPaths, logoFolder, noLogoFolder):
@@ -36,10 +36,8 @@ def classifyImage(imagePath, models):
         image = Image.open(imagePath)
         imageAsNumpyArray = asarray(image)
         imageAsNumpyArray = imageAsNumpyArray[np.newaxis, ...]
-        print(imageAsNumpyArray.shape)
         predictions = model.predict(imageAsNumpyArray)
         labels = np.argmax(predictions, axis=1)
-        print(labels)
         label = labels[0] 
         if label == 0:
             return 0
