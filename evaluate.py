@@ -5,7 +5,7 @@ from pyimagesearch import config
 import numpy as np
 from numpy import asarray
 from tensorflow import keras
-from tensorflow.keras.preprocessing import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 
@@ -17,17 +17,17 @@ def main():
     modelPaths = ["adidas.classifier.h5"]
     evaluateNetworks(modelPaths, logoFolder, noLogoFolder)
 
-def evaluateNetwork(modelPaths, logoFolder, noLogoFolder):
+def evaluateNetworks(modelPaths, logoFolder, noLogoFolder):
     models = loadModels(modelPaths)
     imagesToEvaluate = os.listdir(config.EVAL_PATH)   
-    for imagePath in imagesToEvaluate:
-        sourcePath = config.EVAL_PATH + image
-        imageClass = classifyImage(imagePath, models)
+    for imageName in imagesToEvaluate:
+        sourcePath = os.path.join(config.EVAL_PATH, imageName)
+        imageClass = classifyImage(sourcePath, models)
         if imageClass == 0:
-           destinationPath = logoFolder + image
+           destinationPath = os.path.join(logoFolder ,imageName)
            copyfile(sourcePath, destinationPath) 
-        else if imageClass == 1:
-           destinationPath = noLogoFolder + image
+        elif imageClass == 1: 
+           destinationPath = os.path.join(noLogoFolder ,imageName)
            copyfile(sourcePath, destinationPath)
     
 
@@ -35,9 +35,12 @@ def classifyImage(imagePath, models):
     for model in models:
         image = Image.open(imagePath)
         imageAsNumpyArray = asarray(image)
+        imageAsNumpyArray = imageAsNumpyArray[np.newaxis, ...]
+        print(imageAsNumpyArray.shape)
         predictions = model.predict(imageAsNumpyArray)
         labels = np.argmax(predictions, axis=1)
-        label = labels[0,0] 
+        print(labels)
+        label = labels[0] 
         if label == 0:
             return 0
     return 1
