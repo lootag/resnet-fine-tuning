@@ -14,13 +14,18 @@ def main():
     noLogoFolder = "no_logo"
     os.mkdir(logoFolder)
     os.mkdir(noLogoFolder)
-    modelPaths = ["adidas.model.h5", "nike.model.h5", "ua.model.h5"]
+    modelPaths = ["adidas.classifier.h5"]
     evaluateNetworks(modelPaths, logoFolder, noLogoFolder)
 
 def evaluateNetworks(modelPaths, logoFolder, noLogoFolder):
     models = loadModels(modelPaths)
     imagesToEvaluate = os.listdir(config.EVAL_PATH)   
+    index = 0
     for imageName in imagesToEvaluate:
+        index += 1
+        printEvery = 100 
+        if index % printEvery == 0:
+            print(str(index) + "images out of " + str(len(imagesToEvaluate)) + " processed")
         sourcePath = os.path.join(config.EVAL_PATH, imageName)
         imageClass = classifyImage(sourcePath, models)
         if imageClass == 0:
