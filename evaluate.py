@@ -14,7 +14,7 @@ def main():
     noLogoFolder = "no_logo"
     os.mkdir(logoFolder)
     os.mkdir(noLogoFolder)
-    modelPaths = ["adidas.classifier.h5"]
+    modelPaths = ["adidas.model.h5", "nike.model.h5", "ua.model.h5"]
     evaluateNetworks(modelPaths, logoFolder, noLogoFolder)
 
 def evaluateNetworks(modelPaths, logoFolder, noLogoFolder):
