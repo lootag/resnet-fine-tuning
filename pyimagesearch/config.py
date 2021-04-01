@@ -23,7 +23,7 @@ TRAIN_SPLIT = 0.75
 VAL_SPLIT = 0.1
 
 # define the names of the classes
-CLASSES = ["logo", "no_logo"]
+CLASSES = ["cat", "dog"]
 
 # initialize the initial learning rate, batch size, and number of
 # epochs to train for
